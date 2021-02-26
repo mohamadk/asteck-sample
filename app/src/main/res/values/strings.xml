@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">AstekSample</string>
+    <string name="app_name">Movies</string>
+    <string name="movie_listing_search">name a movie</string>
+    <string name="movie">movie</string>
 </resources>
