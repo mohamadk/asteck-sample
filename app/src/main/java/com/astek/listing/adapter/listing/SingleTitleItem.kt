@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.astek.R
 import com.astek.app.imageloader.GlideApp
 import com.astek.listing.adapter.MovieListingItemTypes
-import com.astek.listing.adapter.MoviesModelItemWrapper
+import com.astek.listing.adapter.ItemMoviesModelWrapper
 import com.mikepenz.fastadapter.items.ModelAbstractItem
 import kotlinx.android.synthetic.main.item_movie.view.*
 
-class SingleTitleItem(wrapper: MoviesModelItemWrapper<*>) :
-    ModelAbstractItem<MoviesModelItemWrapper<*>, RecyclerView.ViewHolder>(wrapper) {
+class SingleTitleItem(wrapper: ItemMoviesModelWrapper<*>) :
+    ModelAbstractItem<ItemMoviesModelWrapper<*>, RecyclerView.ViewHolder>(wrapper) {
     override val layoutRes: Int = R.layout.item_movie
     override val type: Int = MovieListingItemTypes.SingleTitleItemType.value
 

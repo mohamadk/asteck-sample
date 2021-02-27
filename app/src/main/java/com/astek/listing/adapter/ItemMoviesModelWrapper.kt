@@ -1,7 +1,7 @@
 package com.astek.listing.adapter
 
-import com.astek.listing.adapter.MoviesModelItemWrapper.Companion.LOADING_ITEM
-import com.astek.listing.adapter.MoviesModelItemWrapper.Companion.MOVIE_LISTING_ITEM
+import com.astek.listing.adapter.ItemMoviesModelWrapper.Companion.LOADING_ITEM
+import com.astek.listing.adapter.ItemMoviesModelWrapper.Companion.MOVIE_LISTING_ITEM
 
 sealed class MovieListingItemTypes {
     object SingleTitleItemType : MovieListingItemTypes(){
@@ -12,9 +12,9 @@ sealed class MovieListingItemTypes {
     }
 }
 
-class MoviesModelItemWrapper<MODEL>(
-    val model: MODEL,
-    val type: MovieListingItemTypes
+data class ItemMoviesModelWrapper<MODEL>(
+    val type: MovieListingItemTypes,
+    val model: MODEL
 ) {
     companion object {
         const val MOVIE_LISTING_ITEM = 1001

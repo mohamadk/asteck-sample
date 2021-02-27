@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.astek.R
 import com.astek.di.ViewModelFactory
 import com.astek.listing.adapter.MoviesItemFactory
-import com.astek.listing.adapter.MoviesModelItemWrapper
+import com.astek.listing.adapter.ItemMoviesModelWrapper
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ModelAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
@@ -26,7 +26,7 @@ class MovieListingFragment : Fragment(R.layout.fragment_movie_listing) {
     }
 
     private val moviesItemFactory = MoviesItemFactory()
-    private val itemAdapter: ModelAdapter<MoviesModelItemWrapper<*>, ModelAbstractItem<*, *>> =
+    private val itemAdapter: ModelAdapter<ItemMoviesModelWrapper<*>, ModelAbstractItem<*, *>> =
         ModelAdapter(moviesItemFactory)
     private val fastAdapter: FastAdapter<AbstractItem<out RecyclerView.ViewHolder>> =
         FastAdapter.with(listOf(itemAdapter))
