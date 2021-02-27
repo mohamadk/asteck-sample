@@ -43,6 +43,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+    implementation("androidx.lifecycle:lifecycle-extensions:$androidxLifecycleVersion")
+
     implementation("com.mikepenz:fastadapter:$fastAdapterVersion") {
         transitive = true
     }

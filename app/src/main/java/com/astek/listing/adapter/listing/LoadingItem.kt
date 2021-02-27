@@ -1,10 +1,10 @@
-package com.astek.listing.items
+package com.astek.listing.adapter.listing
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.astek.R
-import com.astek.listing.MovieListingItemTypes
-import com.astek.listing.MoviesModelItemWrapper
+import com.astek.listing.adapter.MovieListingItemTypes
+import com.astek.listing.adapter.MoviesModelItemWrapper
 import com.mikepenz.fastadapter.items.ModelAbstractItem
 
 class LoadingItem(wrapper: MoviesModelItemWrapper<*>) :

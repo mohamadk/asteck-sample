@@ -1,7 +1,7 @@
-package com.astek.listing
+package com.astek.listing.adapter
 
-import com.astek.listing.items.LoadingItem
-import com.astek.listing.items.SingleTitleItem
+import com.astek.listing.adapter.listing.LoadingItem
+import com.astek.listing.adapter.listing.SingleTitleItem
 import com.mikepenz.fastadapter.items.ModelAbstractItem
 
 class MoviesItemFactory() : (MoviesModelItemWrapper<*>) -> ModelAbstractItem<*, *> {

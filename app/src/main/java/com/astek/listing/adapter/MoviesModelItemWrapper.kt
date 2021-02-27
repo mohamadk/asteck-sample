@@ -1,7 +1,7 @@
-package com.astek.listing
+package com.astek.listing.adapter
 
-import com.astek.listing.MoviesModelItemWrapper.Companion.LOADING_ITEM
-import com.astek.listing.MoviesModelItemWrapper.Companion.MOVIE_LISTING_ITEM
+import com.astek.listing.adapter.MoviesModelItemWrapper.Companion.LOADING_ITEM
+import com.astek.listing.adapter.MoviesModelItemWrapper.Companion.MOVIE_LISTING_ITEM
 
 sealed class MovieListingItemTypes {
     object SingleTitleItemType : MovieListingItemTypes(){
