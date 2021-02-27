@@ -35,10 +35,5 @@ class MovieListingFragment : Fragment(R.layout.fragment_movie_listing) {
             layoutManager = GridLayoutManager(requireActivity(), NUMBER_OF_COLUMNS_IN_LIST)
             adapter = fastAdapter
         }
-
     }
-
-
-
-
 }

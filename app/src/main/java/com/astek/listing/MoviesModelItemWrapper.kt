@@ -12,7 +12,6 @@ sealed class MovieListingItemTypes {
     }
 }
 
-
 class MoviesModelItemWrapper<MODEL>(
     val model: MODEL,
     val type: MovieListingItemTypes

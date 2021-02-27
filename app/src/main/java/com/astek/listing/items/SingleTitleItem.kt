@@ -3,10 +3,10 @@ package com.astek.listing.items
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.astek.R
+import com.astek.app.imageloader.GlideApp
 import com.astek.listing.ItemMovieModel
 import com.astek.listing.MovieListingItemTypes
 import com.astek.listing.MoviesModelItemWrapper
-import com.bumptech.glide.Glide
 import com.mikepenz.fastadapter.items.ModelAbstractItem
 import kotlinx.android.synthetic.main.item_movie.view.*
 
@@ -25,13 +25,10 @@ class SingleTitleItem(wrapper: MoviesModelItemWrapper<*>) :
         super.bindView(holder, payloads)
         holder.itemView.titleTextView.text = itemMovieModel.title
 
-        Glide.with(holder.itemView)
+        GlideApp.with(holder.itemView)
             .load(itemMovieModel.image)
             .into(holder.itemView.backgroundImageView)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    }
-
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
