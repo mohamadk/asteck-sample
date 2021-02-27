@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="d8">80dp</dimen>
+    <dimen name="d25">200dp</dimen>
+    <dimen name="d37_half">300dp</dimen>
+    <dimen name="d1">8dp</dimen>
 </resources>
