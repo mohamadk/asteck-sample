@@ -2,18 +2,21 @@ package com.astek.listing
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.astek.R
 import com.astek.di.ViewModelFactory
-import com.astek.listing.adapter.MoviesItemFactory
 import com.astek.listing.adapter.ItemMoviesModelWrapper
+import com.astek.listing.adapter.MoviesItemFactory
 import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.adapters.ModelAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.items.ModelAbstractItem
+import com.mikepenz.fastadapter.ui.items.ProgressItem
 import kotlinx.android.synthetic.main.fragment_movie_listing.*
 import javax.inject.Inject
 
@@ -28,8 +31,9 @@ class MovieListingFragment : Fragment(R.layout.fragment_movie_listing) {
     private val moviesItemFactory = MoviesItemFactory()
     private val itemAdapter: ModelAdapter<ItemMoviesModelWrapper<*>, ModelAbstractItem<*, *>> =
         ModelAdapter(moviesItemFactory)
+    private val footerAdapter = ItemAdapter<ProgressItem>()
     private val fastAdapter: FastAdapter<AbstractItem<out RecyclerView.ViewHolder>> =
-        FastAdapter.with(listOf(itemAdapter))
+        FastAdapter.with(listOf(itemAdapter, footerAdapter))
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

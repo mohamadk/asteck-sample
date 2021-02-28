@@ -27,8 +27,8 @@ class MovieListingViewModelTest {
     private val errorMessage = "something went wrong :O"
     private val initialLoading = ViewState(showInitialLoading = true)
     private val pagingLoading = ViewState(showPagingLoading = true)
-    private val initialSuccess = ViewState(initialItems = itemsWrapper)
-    private val pagingSuccess = ViewState(pagingItems = itemsWrapper)
+    private val initialSuccess = ViewState(items = itemsWrapper)
+    private val pagingSuccess = ViewState(items = itemsWrapper)
     private val initialFailure = ViewState(initialErrorMessage = errorMessage)
     private val pagingFailure = ViewState(pagingErrorMessage = errorMessage)
     private val error = IllegalStateException(errorMessage)

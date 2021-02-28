@@ -39,7 +39,7 @@ internal class ViewModelStateToViewStateMapperTest {
     fun `map initial success`() {
         val initialSuccess = ViewModelState.Success(items = items, availableCount = 1)
         assertEquals(
-            ViewState(initialItems = items),
+            ViewState(items = items),
             ViewModelStateToViewStateMapper().map(initialSuccess)
         )
     }
@@ -48,7 +48,7 @@ internal class ViewModelStateToViewStateMapperTest {
     fun `map paging success`() {
         val pagingSuccess = ViewModelState.Success(paging = true, items = items, availableCount = 1)
         assertEquals(
-            ViewState(pagingItems = items),
+            ViewState(items = items),
             ViewModelStateToViewStateMapper().map(pagingSuccess)
         )
     }

@@ -2,4 +2,6 @@
     <string name="app_name">Movies</string>
     <string name="movie_listing_search">name a movie</string>
     <string name="movie">movie</string>
+    <string name="retry">Retry</string>
+    <string name="something_went_wrong_please_try_again_later">something went wrong please try again later</string>
 </resources>

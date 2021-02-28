@@ -24,6 +24,7 @@ class MovieListingFragmentViewModel @Inject constructor(
     private val _viewStateLiveData = MutableLiveData<ViewState>()
     val viewStateLiveData: LiveData<ViewState> = _viewStateLiveData
     private val compositeDisposable = CompositeDisposable()
+    val allMovieItems: MutableList<ItemMoviesModelWrapper<*>> = mutableListOf()
 
     init {
         loadMoviesPublishSubject
@@ -42,9 +43,10 @@ class MovieListingFragmentViewModel @Inject constructor(
                                 itemMovieModel
                             )
                         }
+                        allMovieItems.addAll(items)
                         ViewModelState.Success(
                             !loadMoviesParams.isInitialLoad,
-                            items,
+                            allMovieItems,
                             movieResponse.availableCount
                         ) as ViewModelState
                     }
@@ -137,6 +139,5 @@ data class ViewState(
     val showPagingLoading: Boolean = false,
     val initialErrorMessage: String? = null,
     val pagingErrorMessage: String? = null,
-    val pagingItems: List<ItemMoviesModelWrapper<*>>? = null,
-    val initialItems: List<ItemMoviesModelWrapper<*>>? = null
+    val items: List<ItemMoviesModelWrapper<*>>? = null
 )

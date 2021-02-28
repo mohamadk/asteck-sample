@@ -4,4 +4,5 @@
     <dimen name="d25">200dp</dimen>
     <dimen name="d37_half">300dp</dimen>
     <dimen name="d1">8dp</dimen>
+    <dimen name="d2">16dp</dimen>
 </resources>

@@ -8,14 +8,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/moviesRecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progressBar"
+        android:id="@+id/initialProgressBar"
         android:layout_width="@dimen/d8"
         android:layout_height="@dimen/d8"
         android:visibility="gone"
         android:layout_gravity="center"
         tools:visibility="visible" />
+
+    <include
+        android:id="@+id/errorView"
+        layout="@layout/error_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
 </FrameLayout>

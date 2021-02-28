@@ -30,18 +30,7 @@ class ViewModelStateToViewStateMapper @Inject constructor() : Mapper<ViewModelSt
                 )
             }
             is ViewModelState.Success -> {
-                ViewState(
-                    pagingItems = if (viewModelState.paging) {
-                        viewModelState.items
-                    } else {
-                        null
-                    },
-                    initialItems = if (!viewModelState.paging) {
-                        viewModelState.items
-                    } else {
-                        null
-                    }
-                )
+                ViewState(items = viewModelState.items)
             }
             ViewModelState.NoMoreItemAvailable -> {
                 ViewState()
