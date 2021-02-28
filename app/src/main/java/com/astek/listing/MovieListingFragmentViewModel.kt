@@ -64,7 +64,7 @@ class MovieListingFragmentViewModel @Inject constructor(
     }
 
     fun onEndOfListReached(count: Int) {
-
+        loadMoviesPublishSubject.onNext(LoadMoviesParams(false, count))
     }
 
     override fun onCleared() {
@@ -73,7 +73,7 @@ class MovieListingFragmentViewModel @Inject constructor(
     }
 }
 
-class LoadMoviesParams(val isInitialLoad: Boolean)
+class LoadMoviesParams(val isInitialLoad: Boolean, val count: Int = -1)
 
 sealed class ViewModelState {
     data class Loading(val paging: Boolean = false) : ViewModelState()

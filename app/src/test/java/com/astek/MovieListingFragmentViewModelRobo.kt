@@ -8,10 +8,7 @@ import io.reactivex.schedulers.TestScheduler
 import junit.framework.Assert.assertEquals
 
 
-class MovieListingFragmentViewModelRobo(
-    private val testScheduler: TestScheduler,
-    loadMovieResponse: Observable<MoviesResponse>
-) {
+class MovieListingFragmentViewModelRobo(loadMovieResponse: Observable<MoviesResponse>) {
 
     private val loadMoviesUseCase: LoadMoviesUseCase = mock()
     private val itemMovieModelToWrapperMapper = ItemMovieModelToWrapperMapper()
@@ -30,9 +27,7 @@ class MovieListingFragmentViewModelRobo(
     }
 
     fun onCreate(): MovieListingFragmentViewModelRobo {
-        testScheduler.triggerActions()
         viewModel.onCreate()
-        testScheduler.triggerActions()
         return this
     }
 
@@ -40,6 +35,11 @@ class MovieListingFragmentViewModelRobo(
         val argCapture = argumentCaptor<ViewState>()
         verify(viewStateObserver, times(viewStates.size)).onChanged(argCapture.capture())
         assertEquals(viewStates.toList(), argCapture.allValues)
+    }
+
+    fun onEndOfListReached(count: Int): MovieListingFragmentViewModelRobo {
+        viewModel.onEndOfListReached(count)
+        return this
     }
 
 }

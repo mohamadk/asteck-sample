@@ -1,27 +1,19 @@
 package com.astek
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.astek.listing.MoviesResponse
 import com.astek.listing.ViewState
 import com.astek.listing.adapter.ItemMoviesModelWrapper
 import com.astek.listing.adapter.MovieListingItemTypes
 import com.astek.listing.adapter.listing.ItemMovieModel
-import com.astek.utils.TestSchedulerRule
+import com.astek.utils.InstantExecutorExtension
+
 import io.reactivex.Observable
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.jupiter.api.Test
 
-@RunWith(MockitoJUnitRunner::class)
+import org.junit.jupiter.api.extension.ExtendWith
+
+@ExtendWith(InstantExecutorExtension::class)
 class MovieListingViewModelTest {
-
-    @JvmField
-    @get:Rule
-    val schedulerRule = TestSchedulerRule()
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
 
     private val items = listOf(
         ItemMovieModel("title", "imageurl")
@@ -43,20 +35,29 @@ class MovieListingViewModelTest {
 
     @Test
     fun `initial load items and success`() {
-        MovieListingFragmentViewModelRobo(
-            schedulerRule.testScheduler,
-            Observable.just(MoviesResponse(items, items.size))
-        )
+        MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
             .onCreate()
             .verify(initialLoading, initialSuccess)
     }
 
     @Test
     fun `initial load items and failure`() {
-        MovieListingFragmentViewModelRobo(schedulerRule.testScheduler, Observable.error(error))
+        MovieListingFragmentViewModelRobo(Observable.error(error))
             .onCreate()
             .verify(initialLoading, initialFailure)
     }
 
+    @Test
+    fun `paging load items and success`() {
+        MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
+            .onEndOfListReached(1)
+            .verify(pagingLoading, pagingSuccess)
+    }
 
+    @Test
+    fun `paging load items and failure`() {
+        MovieListingFragmentViewModelRobo(Observable.error(error))
+            .onEndOfListReached(1)
+            .verify(pagingLoading, pagingFailure)
+    }
 }
