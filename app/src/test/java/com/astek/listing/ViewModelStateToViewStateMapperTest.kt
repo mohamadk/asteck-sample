@@ -71,4 +71,13 @@ internal class ViewModelStateToViewStateMapperTest {
             ViewModelStateToViewStateMapper().map(pagingFailure)
         )
     }
+
+    @Test
+    fun `map no more Item available`() {
+        val pagingFailure = ViewModelState.NoMoreItemAvailable
+        assertEquals(
+            ViewState(),
+            ViewModelStateToViewStateMapper().map(pagingFailure)
+        )
+    }
 }
