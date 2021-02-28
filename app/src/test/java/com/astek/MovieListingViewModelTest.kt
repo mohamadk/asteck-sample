@@ -1,15 +1,13 @@
 package com.astek
 
-import com.astek.listing.loadmovie.MoviesResponse
 import com.astek.listing.ViewState
 import com.astek.listing.adapter.ItemMoviesModelWrapper
 import com.astek.listing.adapter.MovieListingItemTypes
 import com.astek.listing.adapter.listing.ItemMovieModel
+import com.astek.listing.loadmovie.MoviesResponse
 import com.astek.utils.InstantExecutorExtension
-
 import io.reactivex.Observable
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(InstantExecutorExtension::class)
@@ -18,20 +16,20 @@ class MovieListingViewModelTest {
     private val items = listOf(
         ItemMovieModel("title", "imageurl")
     )
-    private val itemsWrapper: List<ItemMoviesModelWrapper<*>> = listOf(
-        ItemMoviesModelWrapper(
-            MovieListingItemTypes.SingleTitleItemType,
-            ItemMovieModel("title", "imageurl")
-        )
+    private val itemWrapper = ItemMoviesModelWrapper(
+        MovieListingItemTypes.SingleTitleItemType,
+        ItemMovieModel("title", "imageurl")
     )
-    private val errorMessage = IllegalThreadStateException("something went wrong :O")
+    private val itemsWrapper: List<ItemMoviesModelWrapper<*>> = listOf(itemWrapper)
+
+    private val errorMessage = "something went wrong :O"
     private val initialLoading = ViewState(showInitialLoading = true)
     private val pagingLoading = ViewState(showPagingLoading = true)
     private val initialSuccess = ViewState(items = itemsWrapper)
-    private val pagingSuccess = ViewState(items = itemsWrapper)
-    private val initialFailure = ViewState(initialErrorMessage = errorMessage)
-    private val pagingFailure = ViewState(pagingErrorMessage = errorMessage)
+    private val pagingSuccess = ViewState(items = listOf(itemWrapper,itemWrapper))
     private val error = IllegalStateException(errorMessage)
+    private val initialFailure = ViewState(initialErrorMessage = error)
+    private val pagingFailure = ViewState(pagingErrorMessage = error)
 
     @Test
     fun `initial load items and success`() {
@@ -48,16 +46,20 @@ class MovieListingViewModelTest {
     }
 
     @Test
-    fun `paging load items and success`() {
+    fun `paging load no more item available`() {
         MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
             .onEndOfListReached()
-            .verify(pagingLoading, pagingSuccess)
+            .verify()
     }
 
     @Test
-    fun `paging load items and failure`() {
-        MovieListingFragmentViewModelRobo(Observable.error(error))
+    fun `paging load items and success`() {
+        MovieListingFragmentViewModelRobo(
+            Observable.just(MoviesResponse(items, items.size + 1)),
+            Observable.just(MoviesResponse(items, items.size))
+        )
+            .search("s")
             .onEndOfListReached()
-            .verify(pagingLoading, pagingFailure)
+            .verify(initialLoading, initialSuccess, pagingLoading, pagingSuccess)
     }
 }

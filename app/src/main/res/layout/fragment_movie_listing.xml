@@ -12,11 +12,11 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/initialProgressBar"
-        android:layout_width="@dimen/d8"
-        android:layout_height="@dimen/d8"
-        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
         android:layout_gravity="center"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <include
         android:id="@+id/errorView"

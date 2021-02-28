@@ -12,7 +12,7 @@ import io.reactivex.Observable
 import junit.framework.Assert.assertEquals
 
 
-class MovieListingFragmentViewModelRobo(loadMovieResponse: Observable<MoviesResponse>) {
+class MovieListingFragmentViewModelRobo(vararg loadMovieResponses: Observable<MoviesResponse>) {
 
     private val loadMoviesUseCase: LoadMoviesUseCase = mock()
     private val itemMovieModelToWrapperMapper = ItemMovieModelToWrapperMapper()
@@ -21,7 +21,14 @@ class MovieListingFragmentViewModelRobo(loadMovieResponse: Observable<MoviesResp
     private val viewStateObserver: Observer<ViewState> = mock()
 
     init {
-        whenever(loadMoviesUseCase.run(any())).thenReturn(loadMovieResponse)
+        if (loadMovieResponses.size > 1) {
+            whenever(loadMoviesUseCase.run(any())).thenReturn(
+                loadMovieResponses[0],
+                *loadMovieResponses.sliceArray(1 until loadMovieResponses.size)
+            )
+        } else {
+            whenever(loadMoviesUseCase.run(any())).thenReturn(loadMovieResponses[0])
+        }
         viewModel = MovieListingFragmentViewModel(
             loadMoviesUseCase,
             itemMovieModelToWrapperMapper,

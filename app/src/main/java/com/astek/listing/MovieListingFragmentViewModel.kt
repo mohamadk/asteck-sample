@@ -34,11 +34,10 @@ class MovieListingFragmentViewModel @Inject constructor(
 
     init {
         loadMoviesPublishSubject
-            .debounce(300, TimeUnit.MILLISECONDS)
+//            .debounce(300, TimeUnit.MILLISECONDS)
             .filter {
-                !it.searchQuery.isNullOrBlank()
+                !(it.searchQuery.isNullOrBlank() && it.isInitialLoad)
             }
-            .distinctUntilChanged()
             .doOnNext {
                 lastLoadMoviesQuery = it
             }

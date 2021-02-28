@@ -8,6 +8,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/backgroundImageView"
         android:layout_width="match_parent"
+        android:scaleType="fitXY"
         tools:background="#9C27B0"
         android:layout_height="match_parent" />
 
@@ -19,6 +20,7 @@
         android:layout_marginBottom="@dimen/d1"
         android:id="@+id/titleTextView"
         tools:text="Title"
+        android:textColor="@color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:ellipsize="end"
         android:maxLines="2"

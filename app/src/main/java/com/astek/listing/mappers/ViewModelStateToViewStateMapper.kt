@@ -31,7 +31,7 @@ class ViewModelStateToViewStateMapper @Inject constructor() : Mapper<ViewModelSt
                 )
             }
             is ViewModelState.Success -> {
-                ViewState(items = viewModelState.items)
+                ViewState(items = viewModelState.items.copyOf())
             }
             ViewModelState.NoMoreItemAvailable -> {
                 ViewState()
