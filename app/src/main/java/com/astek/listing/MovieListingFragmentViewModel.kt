@@ -8,6 +8,7 @@ import com.astek.listing.loadmovie.LoadMoviesUseCase
 import com.astek.listing.mappers.ItemMovieModelToWrapperMapper
 import com.astek.listing.mappers.ViewModelStateToViewStateMapper
 import com.astek.utils.disposeBy
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -19,33 +20,41 @@ class MovieListingFragmentViewModel @Inject constructor(
     private val viewModelStateToViewStateMapper: ViewModelStateToViewStateMapper
 ) : ViewModel() {
 
-    private val loadMoviesPublishSubject = PublishSubject.create<LoadMoviesParams>()
+    private val loadMoviesPublishSubject = PublishSubject.create<LoadMoviesQuery>()
     private val _viewStateLiveData = MutableLiveData<ViewState>()
     val viewStateLiveData: LiveData<ViewState> = _viewStateLiveData
     private val compositeDisposable = CompositeDisposable()
 
     init {
-        loadMoviesPublishSubject.flatMap { loadMoviesParams ->
-            loadMoviesUseCase.run(loadMoviesParams)
-                .map { movieResponse ->
-                    val items = movieResponse.items.map { itemMovieModel ->
-                        itemMovieModelToWrapperMapper.map(
-                            itemMovieModel
-                        )
+        loadMoviesPublishSubject
+            .flatMap { loadMoviesQuery ->
+                val nextPage = calculateNextPage(loadMoviesQuery)
+                if (nextPage > 0) {
+                    Observable.just(LoadMoviesParams(nextPage, loadMoviesQuery.searchQuery))
+                } else {
+                    Observable.error(NoMoreItemAvailable())
+                }
+            }.flatMap { loadMoviesParams ->
+                loadMoviesUseCase.run(loadMoviesParams)
+                    .map { movieResponse ->
+                        val items = movieResponse.items.map { itemMovieModel ->
+                            itemMovieModelToWrapperMapper.map(
+                                itemMovieModel
+                            )
+                        }
+                        ViewModelState.Success(
+                            !loadMoviesParams.isInitialLoad,
+                            items,
+                            movieResponse.availableCount
+                        ) as ViewModelState
                     }
-                    ViewModelState.Success(
-                        !loadMoviesParams.isInitialLoad,
-                        items,
-                        movieResponse.availableCount
-                    ) as ViewModelState
-                }
-                .onErrorReturn {
-                    ViewModelState.Failure(!loadMoviesParams.isInitialLoad, it.localizedMessage)
-                }
-                .startWith(
-                    ViewModelState.Loading(!loadMoviesParams.isInitialLoad)
-                )
-        }
+                    .onErrorReturn {
+                        ViewModelState.Failure(!loadMoviesParams.isInitialLoad, it.localizedMessage)
+                    }
+                    .startWith(
+                        ViewModelState.Loading(!loadMoviesParams.isInitialLoad)
+                    )
+            }
             .map { viewModelState ->
                 viewModelStateToViewStateMapper.map(viewModelState)
             }
@@ -58,16 +67,29 @@ class MovieListingFragmentViewModel @Inject constructor(
             ).disposeBy(compositeDisposable)
     }
 
+    private fun calculateNextPage(loadMoviesQuery: LoadMoviesQuery): Int {
+        return if (loadMoviesQuery.isInitialLoad) {
+            1
+        } else {
+            val remainingItems = loadMoviesQuery.availableItems - loadMoviesQuery.count
+            if (remainingItems > 0) {
+                loadMoviesQuery.page + 1
+            } else {
+                -1
+            }
+        }
+    }
+
     fun onCreate() {
-        loadMoviesPublishSubject.onNext(LoadMoviesParams(true))
+        loadMoviesPublishSubject.onNext(LoadMoviesQuery(true))
     }
 
     fun viewCreated() {
 
     }
 
-    fun onEndOfListReached(count: Int) {
-        loadMoviesPublishSubject.onNext(LoadMoviesParams(false, count))
+    fun onEndOfListReached(count: Int, availableItems: Int) {
+        loadMoviesPublishSubject.onNext(LoadMoviesQuery(false, count, availableItems = availableItems))
     }
 
     override fun onCleared() {
@@ -76,7 +98,20 @@ class MovieListingFragmentViewModel @Inject constructor(
     }
 }
 
-class LoadMoviesParams(val isInitialLoad: Boolean, val count: Int = -1)
+class LoadMoviesQuery(
+    val isInitialLoad: Boolean,
+    val count: Int = -1,
+    val searchQuery: String? = null,
+    val availableItems: Int = -1,
+    val page: Int = 1
+)
+
+class LoadMoviesParams(
+    val nextPage: Int,
+    val searchQuery: String?
+){
+    val isInitialLoad = nextPage == 1
+}
 
 sealed class ViewModelState {
     data class Loading(val paging: Boolean = false) : ViewModelState()

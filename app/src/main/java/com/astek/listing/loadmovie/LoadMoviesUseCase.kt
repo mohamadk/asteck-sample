@@ -1,6 +1,7 @@
 package com.astek.listing.loadmovie
 
 import com.astek.listing.LoadMoviesParams
+import com.astek.listing.LoadMoviesQuery
 import com.astek.listing.adapter.listing.ItemMovieModel
 import com.astek.utils.UseCase
 import io.reactivex.Observable

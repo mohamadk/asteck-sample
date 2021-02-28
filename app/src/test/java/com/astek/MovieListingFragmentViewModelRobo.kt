@@ -1,7 +1,8 @@
 package com.astek
 
 import androidx.lifecycle.Observer
-import com.astek.listing.*
+import com.astek.listing.MovieListingFragmentViewModel
+import com.astek.listing.ViewState
 import com.astek.listing.loadmovie.LoadMoviesUseCase
 import com.astek.listing.loadmovie.MoviesResponse
 import com.astek.listing.mappers.ItemMovieModelToWrapperMapper
@@ -40,8 +41,8 @@ class MovieListingFragmentViewModelRobo(loadMovieResponse: Observable<MoviesResp
         assertEquals(viewStates.toList(), argCapture.allValues)
     }
 
-    fun onEndOfListReached(count: Int): MovieListingFragmentViewModelRobo {
-        viewModel.onEndOfListReached(count)
+    fun onEndOfListReached(count: Int, availableItems: Int): MovieListingFragmentViewModelRobo {
+        viewModel.onEndOfListReached(count, availableItems)
         return this
     }
 

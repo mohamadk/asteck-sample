@@ -49,15 +49,19 @@ class MovieListingViewModelTest {
 
     @Test
     fun `paging load items and success`() {
+        val count = 1
+        val availableItems = 2
         MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
-            .onEndOfListReached(1)
+            .onEndOfListReached(count, availableItems)
             .verify(pagingLoading, pagingSuccess)
     }
 
     @Test
     fun `paging load items and failure`() {
+        val count = 1
+        val availableItems = 2
         MovieListingFragmentViewModelRobo(Observable.error(error))
-            .onEndOfListReached(1)
+            .onEndOfListReached(count, availableItems)
             .verify(pagingLoading, pagingFailure)
     }
 }
