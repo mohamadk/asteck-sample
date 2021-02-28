@@ -1,3 +1,8 @@
 package com.astek.listing.adapter.listing
 
-data class ItemMovieModel(val title: String, val image: String)
+import com.google.gson.annotations.SerializedName
+
+data class ItemMovieModel(
+    @SerializedName("Title") val title: String?,
+    @SerializedName("Poster") val image: String?
+)

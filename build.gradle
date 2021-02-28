@@ -24,6 +24,7 @@ ext{
     rxjavaVersion = '2.2.19'
     rxKotlinVersion = '2.4.0'
     junit5 = "5.7.0"
+    retrofitVersion = "2.9.0"
 }
 
 

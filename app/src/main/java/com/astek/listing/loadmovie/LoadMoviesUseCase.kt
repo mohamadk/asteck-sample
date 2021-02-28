@@ -1,12 +1,14 @@
 package com.astek.listing.loadmovie
 
 import com.astek.listing.LoadMoviesParams
-import com.astek.listing.LoadMoviesQuery
 import com.astek.listing.adapter.listing.ItemMovieModel
 import com.astek.utils.UseCase
+import com.google.gson.annotations.SerializedName
 import io.reactivex.Observable
+import java.lang.Exception
+import javax.inject.Inject
 
-class LoadMoviesUseCase(private val loadMoviesRepository: LoadMoviesRepository) :
+class LoadMoviesUseCase @Inject constructor(private val loadMoviesRepository: LoadMoviesRepository) :
     UseCase<LoadMoviesParams, Observable<MoviesResponse>> {
 
     override fun run(params: LoadMoviesParams): Observable<MoviesResponse> {
@@ -14,4 +16,7 @@ class LoadMoviesUseCase(private val loadMoviesRepository: LoadMoviesRepository) 
     }
 }
 
-class MoviesResponse(val items: List<ItemMovieModel>, val availableCount: Int)
+data class MoviesResponse(
+    @SerializedName("Search") val items: List<ItemMovieModel>,
+    @SerializedName("totalResults") val availableCount: Int
+)

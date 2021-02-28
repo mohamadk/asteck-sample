@@ -12,11 +12,11 @@ android {
 
     defaultConfig {
         applicationId "com.astek"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -59,6 +59,7 @@ dependencies {
         transitive = true
     }
     implementation "com.mikepenz:fastadapter-extensions-ui:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-scroll:$fastAdapterVersion"
 
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
@@ -66,12 +67,18 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     implementation("io.reactivex.rxjava2:rxjava:$rxjavaVersion")
     implementation("io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion")
     implementation("io.reactivex.rxjava2:rxandroid:$rxAndroidVersion")
     implementation("com.jakewharton.rxbinding3:rxbinding-appcompat:$rxbindingVersion")
     implementation "android.arch.lifecycle:reactivestreams:1.1.1"
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.2.1"
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"

@@ -1,9 +1,11 @@
 package com.astek.listing
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.astek.listing.adapter.ItemMoviesModelWrapper
+import com.astek.listing.loadmovie.LoadMoviesException
 import com.astek.listing.loadmovie.LoadMoviesUseCase
 import com.astek.listing.mappers.ItemMovieModelToWrapperMapper
 import com.astek.listing.mappers.ViewModelStateToViewStateMapper
@@ -12,6 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MovieListingFragmentViewModel @Inject constructor(
@@ -20,14 +23,26 @@ class MovieListingFragmentViewModel @Inject constructor(
     private val viewModelStateToViewStateMapper: ViewModelStateToViewStateMapper
 ) : ViewModel() {
 
+    val retrySubject = PublishSubject.create<Unit>()
     private val loadMoviesPublishSubject = PublishSubject.create<LoadMoviesQuery>()
     private val _viewStateLiveData = MutableLiveData<ViewState>()
     val viewStateLiveData: LiveData<ViewState> = _viewStateLiveData
     private val compositeDisposable = CompositeDisposable()
-    val allMovieItems: MutableList<ItemMoviesModelWrapper<*>> = mutableListOf()
+    private val allMovieItems: MutableList<ItemMoviesModelWrapper<*>> = mutableListOf()
+    private var availableCount: Int = 0
+    private lateinit var lastLoadMoviesQuery: LoadMoviesQuery
 
     init {
         loadMoviesPublishSubject
+            .debounce(300, TimeUnit.MILLISECONDS)
+            .filter {
+                !it.searchQuery.isNullOrBlank()
+            }
+            .distinctUntilChanged()
+            .doOnNext {
+                lastLoadMoviesQuery = it
+            }
+            .mergeWith(retrySubject.map { lastLoadMoviesQuery })
             .flatMap { loadMoviesQuery ->
                 val nextPage = calculateNextPage(loadMoviesQuery)
                 if (nextPage > 0) {
@@ -37,37 +52,40 @@ class MovieListingFragmentViewModel @Inject constructor(
                 }
             }.flatMap { loadMoviesParams ->
                 loadMoviesUseCase.run(loadMoviesParams)
+                    .subscribeOn(Schedulers.io())
                     .map { movieResponse ->
                         val items = movieResponse.items.map { itemMovieModel ->
                             itemMovieModelToWrapperMapper.map(
                                 itemMovieModel
                             )
                         }
+                        if(loadMoviesParams.isInitialLoad){
+                            allMovieItems.clear()
+                        }
                         allMovieItems.addAll(items)
+                        availableCount = movieResponse.availableCount
                         ViewModelState.Success(
                             !loadMoviesParams.isInitialLoad,
-                            allMovieItems,
-                            movieResponse.availableCount
+                            allMovieItems
                         ) as ViewModelState
-                    }
-                    .onErrorReturn {
-                        if (it is NoMoreItemAvailableException) {
-                            ViewModelState.NoMoreItemAvailable
+                    }.onErrorReturn {
+                        if (it is LoadMoviesException) {
+                            if (it.e is NoMoreItemAvailableException) {
+                                ViewModelState.NoMoreItemAvailable
+                            } else {
+                                ViewModelState.Failure(!it.params.isInitialLoad, it.e)
+                            }
                         } else {
-                            ViewModelState.Failure(
-                                !loadMoviesParams.isInitialLoad,
-                                it.localizedMessage
-                            )
+                            ViewModelState.Failure(!loadMoviesParams.isInitialLoad, it)
                         }
                     }
-                    .startWith(
+                    .startWith (
                         ViewModelState.Loading(!loadMoviesParams.isInitialLoad)
                     )
             }
             .map { viewModelState ->
                 viewModelStateToViewStateMapper.map(viewModelState)
             }
-            .subscribeOn(Schedulers.io())
             .subscribe({
                 _viewStateLiveData.postValue(it)
             }, { e ->
@@ -89,16 +107,19 @@ class MovieListingFragmentViewModel @Inject constructor(
         }
     }
 
-    fun onCreate() {
-        loadMoviesPublishSubject.onNext(LoadMoviesQuery(true))
+    fun search(searchQuery: String) {
+        availableCount = 0
+        loadMoviesPublishSubject.onNext(LoadMoviesQuery(true, searchQuery = searchQuery))
     }
 
-    fun viewCreated() {
-
-    }
-
-    fun onEndOfListReached(count: Int, availableItems: Int) {
-        loadMoviesPublishSubject.onNext(LoadMoviesQuery(false, count, availableItems = availableItems))
+    fun onEndOfListReached() {
+        loadMoviesPublishSubject.onNext(
+            LoadMoviesQuery(
+                false,
+                allMovieItems.size,
+                availableItems = availableCount
+            )
+        )
     }
 
     override fun onCleared() {
@@ -126,18 +147,17 @@ sealed class ViewModelState {
     data class Loading(val paging: Boolean = false) : ViewModelState()
     data class Success(
         val paging: Boolean = false,
-        val items: List<ItemMoviesModelWrapper<*>>,
-        val availableCount: Int
+        val items: List<ItemMoviesModelWrapper<*>>
     ) : ViewModelState()
 
-    data class Failure(val paging: Boolean = false, val error: String?) : ViewModelState()
+    data class Failure(val paging: Boolean = false, val error: Throwable?) : ViewModelState()
     object NoMoreItemAvailable : ViewModelState()
 }
 
 data class ViewState(
     val showInitialLoading: Boolean = false,
     val showPagingLoading: Boolean = false,
-    val initialErrorMessage: String? = null,
-    val pagingErrorMessage: String? = null,
+    val initialErrorMessage: Throwable? = null,
+    val pagingErrorMessage: Throwable? = null,
     val items: List<ItemMoviesModelWrapper<*>>? = null
 )

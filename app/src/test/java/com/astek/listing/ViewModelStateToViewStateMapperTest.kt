@@ -6,6 +6,7 @@ import com.astek.listing.adapter.listing.ItemMovieModel
 import com.astek.listing.mappers.ViewModelStateToViewStateMapper
 import junit.framework.Assert.assertEquals
 import org.junit.Test
+import java.lang.IllegalStateException
 
 internal class ViewModelStateToViewStateMapperTest {
 
@@ -15,7 +16,7 @@ internal class ViewModelStateToViewStateMapperTest {
             ItemMovieModel("title", "imageurl")
         )
     )
-    private val errorMessage = "error message"
+    private val errorMessage = IllegalStateException("error message")
 
     @Test
     fun `map initial Loading`() {
@@ -37,7 +38,7 @@ internal class ViewModelStateToViewStateMapperTest {
 
     @Test
     fun `map initial success`() {
-        val initialSuccess = ViewModelState.Success(items = items, availableCount = 1)
+        val initialSuccess = ViewModelState.Success(items = items)
         assertEquals(
             ViewState(items = items),
             ViewModelStateToViewStateMapper().map(initialSuccess)
@@ -46,7 +47,7 @@ internal class ViewModelStateToViewStateMapperTest {
 
     @Test
     fun `map paging success`() {
-        val pagingSuccess = ViewModelState.Success(paging = true, items = items, availableCount = 1)
+        val pagingSuccess = ViewModelState.Success(paging = true, items = items)
         assertEquals(
             ViewState(items = items),
             ViewModelStateToViewStateMapper().map(pagingSuccess)

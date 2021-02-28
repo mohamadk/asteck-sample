@@ -3,6 +3,7 @@ package com.astek.listing.mappers
 import com.astek.listing.ViewModelState
 import com.astek.listing.ViewState
 import com.astek.utils.Mapper
+import com.astek.utils.copyOf
 import javax.inject.Inject
 
 class ViewModelStateToViewStateMapper @Inject constructor() : Mapper<ViewModelState, ViewState> {

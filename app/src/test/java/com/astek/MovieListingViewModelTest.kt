@@ -24,7 +24,7 @@ class MovieListingViewModelTest {
             ItemMovieModel("title", "imageurl")
         )
     )
-    private val errorMessage = "something went wrong :O"
+    private val errorMessage = IllegalThreadStateException("something went wrong :O")
     private val initialLoading = ViewState(showInitialLoading = true)
     private val pagingLoading = ViewState(showPagingLoading = true)
     private val initialSuccess = ViewState(items = itemsWrapper)
@@ -36,32 +36,28 @@ class MovieListingViewModelTest {
     @Test
     fun `initial load items and success`() {
         MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
-            .onCreate()
+            .search("marvel")
             .verify(initialLoading, initialSuccess)
     }
 
     @Test
     fun `initial load items and failure`() {
         MovieListingFragmentViewModelRobo(Observable.error(error))
-            .onCreate()
+            .search("marvel")
             .verify(initialLoading, initialFailure)
     }
 
     @Test
     fun `paging load items and success`() {
-        val count = 1
-        val availableItems = 2
         MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
-            .onEndOfListReached(count, availableItems)
+            .onEndOfListReached()
             .verify(pagingLoading, pagingSuccess)
     }
 
     @Test
     fun `paging load items and failure`() {
-        val count = 1
-        val availableItems = 2
         MovieListingFragmentViewModelRobo(Observable.error(error))
-            .onEndOfListReached(count, availableItems)
+            .onEndOfListReached()
             .verify(pagingLoading, pagingFailure)
     }
 }

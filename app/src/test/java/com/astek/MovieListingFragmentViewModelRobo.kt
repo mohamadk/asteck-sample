@@ -30,8 +30,8 @@ class MovieListingFragmentViewModelRobo(loadMovieResponse: Observable<MoviesResp
         viewModel.viewStateLiveData.observeForever(viewStateObserver)
     }
 
-    fun onCreate(): MovieListingFragmentViewModelRobo {
-        viewModel.onCreate()
+    fun search(searchQuery: String): MovieListingFragmentViewModelRobo {
+        viewModel.search(searchQuery)
         return this
     }
 
@@ -41,8 +41,8 @@ class MovieListingFragmentViewModelRobo(loadMovieResponse: Observable<MoviesResp
         assertEquals(viewStates.toList(), argCapture.allValues)
     }
 
-    fun onEndOfListReached(count: Int, availableItems: Int): MovieListingFragmentViewModelRobo {
-        viewModel.onEndOfListReached(count, availableItems)
+    fun onEndOfListReached(): MovieListingFragmentViewModelRobo {
+        viewModel.onEndOfListReached()
         return this
     }
 
