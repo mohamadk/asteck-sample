@@ -9,7 +9,7 @@ import com.astek.listing.mappers.ItemMovieModelToWrapperMapper
 import com.astek.listing.mappers.ViewModelStateToViewStateMapper
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Observable
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 
 
 class MovieListingFragmentViewModelRobo(vararg loadMovieResponses: Observable<MoviesResponse>) {
@@ -52,5 +52,4 @@ class MovieListingFragmentViewModelRobo(vararg loadMovieResponses: Observable<Mo
         viewModel.onEndOfListReached(page)
         return this
     }
-
 }

@@ -30,6 +30,7 @@ class MovieListingViewModelTest {
     private val error = IllegalStateException(errorMessage)
     private val initialFailure = ViewState(initialErrorMessage = error)
     private val pagingFailure = ViewState(pagingErrorMessage = error)
+    private val noMoreItemAvailable = ViewState()
 
     @Test
     fun `initial load items and success`() {
@@ -48,8 +49,9 @@ class MovieListingViewModelTest {
     @Test
     fun `paging load no more item available`() {
         MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
+            .search("d")
             .onEndOfListReached(1)
-            .verify()
+            .verify(initialLoading, initialSuccess, noMoreItemAvailable)
     }
 
     @Test

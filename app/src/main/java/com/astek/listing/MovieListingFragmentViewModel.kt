@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.astek.listing.adapter.ItemMoviesModelWrapper
-import com.astek.listing.loadmovie.LoadMoviesException
 import com.astek.listing.loadmovie.LoadMoviesUseCase
 import com.astek.listing.mappers.ItemMovieModelToWrapperMapper
 import com.astek.listing.mappers.ViewModelStateToViewStateMapper
@@ -13,6 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MovieListingFragmentViewModel @Inject constructor(
@@ -32,7 +32,7 @@ class MovieListingFragmentViewModel @Inject constructor(
 
     init {
         loadMoviesPublishSubject
-//            .debounce(300, TimeUnit.MILLISECONDS)
+            .debounce(300, TimeUnit.MILLISECONDS)
             .filter {
                 !(it.searchQuery.isNullOrBlank() && it.isInitialLoad)
             }
@@ -40,45 +40,45 @@ class MovieListingFragmentViewModel @Inject constructor(
                 lastLoadMoviesQuery = it
             }
             .mergeWith(retrySubject.map { lastLoadMoviesQuery })
-            .flatMap { loadMoviesQuery ->
-                val nextPage = calculateNextPage(loadMoviesQuery)
-                if (nextPage > 0) {
-                    Observable.just(LoadMoviesParams(nextPage, loadMoviesQuery.searchQuery))
-                } else {
-                    Observable.error(NoMoreItemAvailableException())
-                }
-            }.flatMap { loadMoviesParams ->
-                loadMoviesUseCase.run(loadMoviesParams)
-                    .subscribeOn(Schedulers.io())
-                    .map { movieResponse ->
-                        val items = movieResponse.items.map { itemMovieModel ->
-                            itemMovieModelToWrapperMapper.map(
-                                itemMovieModel
-                            )
+            .flatMap { loadMoviesParams ->
+                Observable.just(loadMoviesParams)
+                    .flatMap { loadMoviesQuery ->
+                        val nextPage = calculateNextPage(loadMoviesQuery)
+                        if (nextPage > 0) {
+                            Observable.just(LoadMoviesParams(nextPage, loadMoviesQuery.searchQuery))
+                        } else {
+                            Observable.error(NoMoreItemAvailableException())
                         }
-                        if(loadMoviesParams.isInitialLoad){
-                            allMovieItems.clear()
-                        }
-                        allMovieItems.addAll(items)
-                        availableCount = movieResponse.availableCount
-                        ViewModelState.Success(
-                            !loadMoviesParams.isInitialLoad,
-                            allMovieItems
-                        ) as ViewModelState
-                    }.onErrorReturn {
-                        if (it is LoadMoviesException) {
-                            if (it.e is NoMoreItemAvailableException) {
-                                ViewModelState.NoMoreItemAvailable
-                            } else {
-                                ViewModelState.Failure(!it.params.isInitialLoad, it.e)
+                    }
+                    .flatMap { loadMoviesParams ->
+                        loadMoviesUseCase.run(loadMoviesParams)
+                            .subscribeOn(Schedulers.io())
+                            .map { movieResponse ->
+                                val items = movieResponse.items.map { itemMovieModel ->
+                                    itemMovieModelToWrapperMapper.map(
+                                        itemMovieModel
+                                    )
+                                }
+                                if (loadMoviesParams.isInitialLoad) {
+                                    allMovieItems.clear()
+                                }
+                                allMovieItems.addAll(items)
+                                availableCount = movieResponse.availableCount
+                                ViewModelState.Success(
+                                    !loadMoviesParams.isInitialLoad,
+                                    allMovieItems
+                                ) as ViewModelState
                             }
+                            .startWith(
+                                ViewModelState.Loading(!loadMoviesParams.isInitialLoad)
+                            )
+                    }.onErrorReturn {
+                        if (it is NoMoreItemAvailableException) {
+                            ViewModelState.NoMoreItemAvailable
                         } else {
                             ViewModelState.Failure(!loadMoviesParams.isInitialLoad, it)
                         }
                     }
-                    .startWith (
-                        ViewModelState.Loading(!loadMoviesParams.isInitialLoad)
-                    )
             }
             .map { viewModelState ->
                 viewModelStateToViewStateMapper.map(viewModelState)
@@ -86,6 +86,7 @@ class MovieListingFragmentViewModel @Inject constructor(
             .subscribe({
                 _viewStateLiveData.postValue(it)
             }, { e ->
+                //this shouldn't happen
                 e.printStackTrace()
             }
             ).disposeBy(compositeDisposable)
