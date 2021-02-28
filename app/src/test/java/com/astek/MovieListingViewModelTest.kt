@@ -62,4 +62,15 @@ class MovieListingViewModelTest {
             .onEndOfListReached()
             .verify(initialLoading, initialSuccess, pagingLoading, pagingSuccess)
     }
+
+    @Test
+    fun `paging load items and failure`() {
+        MovieListingFragmentViewModelRobo(
+            Observable.just(MoviesResponse(items, items.size + 1)),
+            Observable.error(error)
+        )
+            .search("s")
+            .onEndOfListReached()
+            .verify(initialLoading, initialSuccess, pagingLoading, pagingFailure)
+    }
 }
