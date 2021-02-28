@@ -1,5 +1,8 @@
-package com.astek.listing
+package com.astek.listing.mappers
 
+import com.astek.listing.ViewModelState
+import com.astek.listing.ViewState
+import com.astek.utils.Mapper
 import javax.inject.Inject
 
 class ViewModelStateToViewStateMapper @Inject constructor() : Mapper<ViewModelState, ViewState> {

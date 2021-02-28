@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.astek.listing.adapter.ItemMoviesModelWrapper
+import com.astek.listing.loadmovie.LoadMoviesUseCase
+import com.astek.listing.mappers.ItemMovieModelToWrapperMapper
+import com.astek.listing.mappers.ViewModelStateToViewStateMapper
 import com.astek.utils.disposeBy
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

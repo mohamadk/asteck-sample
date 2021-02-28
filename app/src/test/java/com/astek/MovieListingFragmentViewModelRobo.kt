@@ -2,9 +2,12 @@ package com.astek
 
 import androidx.lifecycle.Observer
 import com.astek.listing.*
+import com.astek.listing.loadmovie.LoadMoviesUseCase
+import com.astek.listing.loadmovie.MoviesResponse
+import com.astek.listing.mappers.ItemMovieModelToWrapperMapper
+import com.astek.listing.mappers.ViewModelStateToViewStateMapper
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Observable
-import io.reactivex.schedulers.TestScheduler
 import junit.framework.Assert.assertEquals
 
 

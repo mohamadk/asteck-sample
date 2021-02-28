@@ -1,6 +1,6 @@
 package com.astek
 
-import com.astek.listing.MoviesResponse
+import com.astek.listing.loadmovie.MoviesResponse
 import com.astek.listing.ViewState
 import com.astek.listing.adapter.ItemMoviesModelWrapper
 import com.astek.listing.adapter.MovieListingItemTypes

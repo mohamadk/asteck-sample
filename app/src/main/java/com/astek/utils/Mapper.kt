@@ -1,4 +1,4 @@
-package com.astek.listing
+package com.astek.utils
 
 interface Mapper<T, U> {
 

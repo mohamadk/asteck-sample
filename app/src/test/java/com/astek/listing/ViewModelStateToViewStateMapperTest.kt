@@ -3,6 +3,7 @@ package com.astek.listing
 import com.astek.listing.adapter.ItemMoviesModelWrapper
 import com.astek.listing.adapter.MovieListingItemTypes
 import com.astek.listing.adapter.listing.ItemMovieModel
+import com.astek.listing.mappers.ViewModelStateToViewStateMapper
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 
