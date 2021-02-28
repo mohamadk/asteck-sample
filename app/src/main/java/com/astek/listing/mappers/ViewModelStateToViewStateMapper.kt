@@ -43,6 +43,9 @@ class ViewModelStateToViewStateMapper @Inject constructor() : Mapper<ViewModelSt
                     }
                 )
             }
+            ViewModelState.NoMoreItemAvailable -> {
+                ViewState()
+            }
         }
     }
 }

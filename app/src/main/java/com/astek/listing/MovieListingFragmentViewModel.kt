@@ -32,7 +32,7 @@ class MovieListingFragmentViewModel @Inject constructor(
                 if (nextPage > 0) {
                     Observable.just(LoadMoviesParams(nextPage, loadMoviesQuery.searchQuery))
                 } else {
-                    Observable.error(NoMoreItemAvailable())
+                    Observable.error(NoMoreItemAvailableException())
                 }
             }.flatMap { loadMoviesParams ->
                 loadMoviesUseCase.run(loadMoviesParams)
@@ -49,7 +49,14 @@ class MovieListingFragmentViewModel @Inject constructor(
                         ) as ViewModelState
                     }
                     .onErrorReturn {
-                        ViewModelState.Failure(!loadMoviesParams.isInitialLoad, it.localizedMessage)
+                        if (it is NoMoreItemAvailableException) {
+                            ViewModelState.NoMoreItemAvailable
+                        } else {
+                            ViewModelState.Failure(
+                                !loadMoviesParams.isInitialLoad,
+                                it.localizedMessage
+                            )
+                        }
                     }
                     .startWith(
                         ViewModelState.Loading(!loadMoviesParams.isInitialLoad)
@@ -122,6 +129,7 @@ sealed class ViewModelState {
     ) : ViewModelState()
 
     data class Failure(val paging: Boolean = false, val error: String?) : ViewModelState()
+    object NoMoreItemAvailable : ViewModelState()
 }
 
 data class ViewState(
