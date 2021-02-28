@@ -2,9 +2,7 @@ package com.astek.listing
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -53,11 +51,7 @@ class MovieListingFragment : Fragment(R.layout.fragment_movie_listing) {
             }
     }
 
-    private val onScrollRecyclerviewListener = object : EndlessRecyclerOnScrollListener() {
-        override fun onLoadMore(currentPage: Int) {
-            viewModel.onEndOfListReached()
-        }
-    }
+    private lateinit var onScrollRecyclerviewListener: EndlessRecyclerOnScrollListener
 
     private fun updateViewState(viewstate: ViewState) {
         with(viewstate) {
@@ -95,8 +89,14 @@ class MovieListingFragment : Fragment(R.layout.fragment_movie_listing) {
         super.onViewCreated(view, savedInstanceState)
 
         moviesRecyclerview.apply {
-            layoutManager = GridLayoutManager(requireActivity(), NUMBER_OF_COLUMNS_IN_LIST)
+            val lm = GridLayoutManager(requireActivity(), NUMBER_OF_COLUMNS_IN_LIST)
+            layoutManager = lm
             adapter = fastAdapter
+            onScrollRecyclerviewListener = object : EndlessRecyclerOnScrollListener(lm) {
+                override fun onLoadMore(currentPage: Int) {
+                    viewModel.onEndOfListReached(currentPage)
+                }
+            }
             addOnScrollListener(onScrollRecyclerviewListener)
         }
 

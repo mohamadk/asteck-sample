@@ -60,6 +60,9 @@ dependencies {
     }
     implementation "com.mikepenz:fastadapter-extensions-ui:$fastAdapterVersion"
     implementation "com.mikepenz:fastadapter-extensions-scroll:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-diff:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-binding:$fastAdapterVersion"
+    implementation "com.mikepenz:fastadapter-extensions-utils:$fastAdapterVersion"
 
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"

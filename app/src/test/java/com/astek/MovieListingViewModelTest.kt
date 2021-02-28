@@ -48,7 +48,7 @@ class MovieListingViewModelTest {
     @Test
     fun `paging load no more item available`() {
         MovieListingFragmentViewModelRobo(Observable.just(MoviesResponse(items, items.size)))
-            .onEndOfListReached()
+            .onEndOfListReached(1)
             .verify()
     }
 
@@ -59,7 +59,7 @@ class MovieListingViewModelTest {
             Observable.just(MoviesResponse(items, items.size))
         )
             .search("s")
-            .onEndOfListReached()
+            .onEndOfListReached(1)
             .verify(initialLoading, initialSuccess, pagingLoading, pagingSuccess)
     }
 
@@ -70,7 +70,7 @@ class MovieListingViewModelTest {
             Observable.error(error)
         )
             .search("s")
-            .onEndOfListReached()
+            .onEndOfListReached(1)
             .verify(initialLoading, initialSuccess, pagingLoading, pagingFailure)
     }
 }

@@ -1,6 +1,5 @@
 package com.astek.listing
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MovieListingFragmentViewModel @Inject constructor(
@@ -111,12 +109,14 @@ class MovieListingFragmentViewModel @Inject constructor(
         loadMoviesPublishSubject.onNext(LoadMoviesQuery(true, searchQuery = searchQuery))
     }
 
-    fun onEndOfListReached() {
+    fun onEndOfListReached(page: Int) {
         loadMoviesPublishSubject.onNext(
             LoadMoviesQuery(
                 false,
                 allMovieItems.size,
-                availableItems = availableCount
+                availableItems = availableCount,
+                searchQuery = lastLoadMoviesQuery.searchQuery,
+                page = page
             )
         )
     }

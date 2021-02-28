@@ -48,8 +48,8 @@ class MovieListingFragmentViewModelRobo(vararg loadMovieResponses: Observable<Mo
         assertEquals(viewStates.toList(), argCapture.allValues)
     }
 
-    fun onEndOfListReached(): MovieListingFragmentViewModelRobo {
-        viewModel.onEndOfListReached()
+    fun onEndOfListReached(page: Int): MovieListingFragmentViewModelRobo {
+        viewModel.onEndOfListReached(page)
         return this
     }
 
