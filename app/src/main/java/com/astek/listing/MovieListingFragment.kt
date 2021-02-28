@@ -39,6 +39,38 @@ class MovieListingFragment : Fragment(R.layout.fragment_movie_listing) {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: MovieListingFragmentViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory)[MovieListingFragmentViewModel::class.java]
+            .apply {
+                viewStateLiveData.observe(this@MovieListingFragment) { viewstate ->
+                    updateViewState(viewstate)
+                }
+            }
+    }
+
+    private fun updateViewState(viewstate: ViewState) {
+        with(viewstate) {
+            initialProgressBar.isVisible = showInitialLoading
+            if (showPagingLoading) {
+                showPagingLoading()
+            } else {
+                hidePagingLoading()
+            }
+            items?.let {
+                submitInitialItems(items)
+            }
+            errorView.isVisible = initialErrorMessage != null || pagingErrorMessage != null
+        }
+    }
+
+    private fun submitInitialItems(items: List<ItemMoviesModelWrapper<*>>) {
+        itemAdapter.set(items)
+    }
+
+    private fun hidePagingLoading() {
+        footerAdapter.clear()
+    }
+
+    private fun showPagingLoading() {
+        footerAdapter.add(ProgressItem())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
